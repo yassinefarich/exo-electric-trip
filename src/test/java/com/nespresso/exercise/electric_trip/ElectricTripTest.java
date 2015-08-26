@@ -79,12 +79,12 @@ public class ElectricTripTest {
     @Test
     public void shouldNotChargeIfNoChargingAtLocation() {
         ElectricTrip trip = new ElectricTrip("LIMOGES:25-100-BORDEAUX-400-MARSEILLES");
-        int id = trip.startTripIn("LIMOGES");
-        trip.go();
+        int id = trip.startTripIn("LIMOGES", 85, 5, 3);
+        trip.go(id);
         assertThat(trip.locationOf(id), is("BORDEAUX"));
         String chargeOnArrival = trip.chargeOf(id);
         trip.charge(id, 4);
-        trip.go();
+        trip.go(id);
         assertThat(trip.locationOf(id), is("BORDEAUX"));
         assertThat(trip.chargeOf(id), is(chargeOnArrival));
     }
@@ -92,19 +92,19 @@ public class ElectricTripTest {
     @Test
     public void shouldStopAtChargingLocationToReachFinalDestination() {
         ElectricTrip trip = new ElectricTrip("PARIS-250-LIMOGES:25-100-BORDEAUX-200-TOULOUSE:50-50-MONTPELLIER-200-MARSEILLES");
-        int id = trip.startTripIn("PARIS");
-        trip.go();
+        int id = trip.startTripIn("PARIS", 85, 5, 3);
+        trip.go(id);
         assertThat(trip.locationOf(id), is("LIMOGES"));
-        assertThat(trip.locationOf(id), is("41%"));
+        assertThat(trip.chargeOf(id), is("41%"));
         trip.charge(id, 4);
-        trip.go();
+        trip.go(id);
         assertThat(trip.locationOf(id), is("TOULOUSE"));
         assertThat(trip.chargeOf(id), is("29%"));
-        trip.go();
+        trip.go(id);
         assertThat(trip.locationOf(id), is("TOULOUSE"));
         assertThat(trip.chargeOf(id), is("29%"));
         trip.charge(id,2);
-        trip.go();
+        trip.go(id);
         assertThat(trip.locationOf(id), is("MARSEILLES"));
         assertThat(trip.chargeOf(id), is("41%"));
     }
