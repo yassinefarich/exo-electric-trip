@@ -20,7 +20,7 @@ public class TripMap {
                 city = new City()
                         .withName(parseCityName(data))
                         .withChargerPower(parseChargerPower(data))
-                        .isNextOf(previousCity);
+                        .withPreviousCity(previousCity);
                 cities.add(city);
                 previousCity = city;
 
@@ -56,30 +56,40 @@ public class TripMap {
 
     public void goUtMost(Participant participant) {
         // TODO : Warning a Getter
-        City startingCity = findCity(participant.getStartLocation());
+        City startingCity = participant.getLocation();
         double maxDistance = participant.calculateMaxDistWithLowSpeed();
 
         City city = startingCity;
-        while (city.next() != City.NO_CITY && maxDistance > city.getKmsToNextCity()) {
+        while (city.next() != City.NO_CITY &&
+                maxDistance > city.getKmsToNextCity() &&
+                ( IsItLastChargerOnTheTrip(city) || city == startingCity)) {
+
             maxDistance = maxDistance - city.getKmsToNextCity();
             city = city.next();
         }
 
         participant.setCurrentChargeInKw(maxDistance / participant.getLowSpeedPerformance());
-        participant.setCurrentLocation(city);
+        participant.setLocation(city);
 
         //participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithLowSpeed() * 100));
 
     }
 
+    public boolean IsItLastChargerOnTheTrip(City city)
+    {
+        return !city.hasCharger();
+    }
+
 
     public void sprintUtMost(Participant participant) {
         // TODO : Warning a Getter
-        City startingCity = findCity(participant.getStartLocation());
+        City startingCity = participant.getLocation();
         // There is an error here !!!
         double maxDistance = participant.calculateMaxDistWithHighSpeed();
 
         City city = startingCity;
+        int kmsToDestination = city.calculateKmsToNextCities();
+
         while (city.next() != City.NO_CITY && maxDistance > city.getKmsToNextCity()) {
             maxDistance = maxDistance - city.getKmsToNextCity();
             city = city.next();
@@ -87,24 +97,20 @@ public class TripMap {
 
 
         participant.setCurrentChargeInKw(maxDistance / participant.getHighSpeedPerformance());
-        participant.setCurrentLocation(city);
+        participant.setLocation(city);
 
-      //  participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithHighSpeed() * 100));
-
-       // participant.setCurrentChargeInKw(maxDistance / participant.getHighSpeedPerformance());
-        participant.setCurrentLocation(city);
     }
 
     public City findCity(String city) {
 
         return cities.stream()
-                .filter(c -> c.hasName(city))
+                .filter(c -> c.isNamed(city))
                 .collect(Collectors.toList()).get(0);
     }
 
     public void charge(Participant participant, int hoursOfCharge) {
 
-       // participant
+        // participant
 
     }
 
@@ -120,7 +126,6 @@ public class TripMap {
     public void putKm(int km) {
 
     }
-
 
 
 }

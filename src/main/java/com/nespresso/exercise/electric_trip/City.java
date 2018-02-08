@@ -17,18 +17,32 @@ public class City {
     @Getter
     private int kmsToNextCity;
 
+
+    public int calculateKmsToNextCities() {
+        City city = this;
+        int kmsAccumulator = 0;
+
+        while (city.nextCity != NO_CITY) {
+            kmsAccumulator += city.kmsToNextCity;
+            city = city.nextCity;
+        }
+
+        return kmsAccumulator;
+    }
+
+
+    public City() {
+    }
+
     public City(String cityName, City next) {
         this.name = cityName;
         this.nextCity = next;
     }
 
     public City(String cityName) {
-        this.name = cityName;
-        this.nextCity = City.NO_CITY;
+        this(cityName, City.NO_CITY);
     }
 
-    public City() {
-    }
 
     public City withName(String data) {
         this.name = data;
@@ -40,7 +54,7 @@ public class City {
         return this;
     }
 
-    public City isNextOf(City previousCity) {
+    public City withPreviousCity(City previousCity) {
         if (NO_CITY != previousCity) {
             previousCity.nextCity = this;
         }
@@ -56,7 +70,7 @@ public class City {
         return this;
     }
 
-    public boolean hasName(String name) {
+    public boolean isNamed(String name) {
         return this.name.equals(name);
     }
 
@@ -67,5 +81,9 @@ public class City {
                 ", chargerPower=" + chargerPower +
                 ", kmsToNextCity=" + kmsToNextCity +
                 '}';
+    }
+
+    public boolean hasCharger() {
+        return chargerPower > 0;
     }
 }

@@ -30,7 +30,7 @@ public class ElectricTrip {
                 .batterySize(batterySize)
                 .highSpeedPerformance(highSpeedPerformance)
                 .lowSpeedPerformance(lowSpeedPerformance)
-                .startLocation(start)
+                .location(tripMap.findCity(start))
                 .build()
         );
         return participants.size() - 1;
@@ -53,7 +53,7 @@ public class ElectricTrip {
     }
 
     public String locationOf(int participantId) {
-        return participants.get(participantId).getCurrentLocation().getName();
+        return participants.get(participantId).getLocation().getName();
     }
 
     public String chargeOf(int participantId) {
