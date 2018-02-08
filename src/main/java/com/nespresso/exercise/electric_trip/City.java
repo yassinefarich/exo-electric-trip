@@ -1,11 +1,20 @@
 package com.nespresso.exercise.electric_trip;
 
+import lombok.Getter;
+
 public class City {
 
-    public static City NO_CITY = new City("NULL_CITY", null);
+    public static City NO_CITY = null;
 
+    @Getter
     private String name;
+
+    @Getter
+    private int chargerPower;
+
     private City nextCity;
+
+    @Getter
     private int kmsToNextCity;
 
     public City(String cityName, City next) {
@@ -26,7 +35,12 @@ public class City {
         return this;
     }
 
-    public City nextOf(City previousCity) {
+    public City withChargerPower(int chargerPower) {
+        this.chargerPower = chargerPower;
+        return this;
+    }
+
+    public City isNextOf(City previousCity) {
         if (NO_CITY != previousCity) {
             previousCity.nextCity = this;
         }
@@ -40,6 +54,10 @@ public class City {
     public City kmsToNext(int kms) {
         this.kmsToNextCity = kms;
         return this;
+    }
+
+    public boolean hasName(String name) {
+        return this.name.equals(name);
     }
 
     @Override
