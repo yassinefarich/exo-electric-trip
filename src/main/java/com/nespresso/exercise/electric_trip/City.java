@@ -64,6 +64,7 @@ public class City {
     public String toString() {
         return "City{" +
                 "name='" + name + '\'' +
+                ", chargerPower=" + chargerPower +
                 ", kmsToNextCity=" + kmsToNextCity +
                 '}';
     }

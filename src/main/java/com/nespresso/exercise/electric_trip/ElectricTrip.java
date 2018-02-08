@@ -57,7 +57,7 @@ public class ElectricTrip {
     }
 
     public String chargeOf(int participantId) {
-        return participants.get(participantId).getCurrentCharge() + "%";
+        return participants.get(participantId).calculateBatteryCharge() + "%";
     }
 
 }

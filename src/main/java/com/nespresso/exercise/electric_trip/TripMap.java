@@ -65,15 +65,18 @@ public class TripMap {
             city = city.next();
         }
 
-        participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithLowSpeed() * 100));
+        participant.setCurrentChargeInKw(maxDistance / participant.getLowSpeedPerformance());
         participant.setCurrentLocation(city);
+
+        //participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithLowSpeed() * 100));
+
     }
 
 
     public void sprintUtMost(Participant participant) {
         // TODO : Warning a Getter
         City startingCity = findCity(participant.getStartLocation());
-
+        // There is an error here !!!
         double maxDistance = participant.calculateMaxDistWithHighSpeed();
 
         City city = startingCity;
@@ -82,7 +85,13 @@ public class TripMap {
             city = city.next();
         }
 
-        participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithHighSpeed() * 100));
+
+        participant.setCurrentChargeInKw(maxDistance / participant.getHighSpeedPerformance());
+        participant.setCurrentLocation(city);
+
+      //  participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithHighSpeed() * 100));
+
+       // participant.setCurrentChargeInKw(maxDistance / participant.getHighSpeedPerformance());
         participant.setCurrentLocation(city);
     }
 
