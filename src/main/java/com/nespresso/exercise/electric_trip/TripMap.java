@@ -2,6 +2,7 @@ package com.nespresso.exercise.electric_trip;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TripMap {
@@ -60,10 +61,7 @@ public class TripMap {
         double maxDistance = participant.calculateMaxDistWithLowSpeed();
 
         City city = startingCity;
-        while (city.next() != City.NO_CITY &&
-                maxDistance > city.getKmsToNextCity() &&
-                ( IsItLastChargerOnTheTrip(city) || city == startingCity)) {
-
+        while (city.next() != City.NO_CITY && IsItLastChargerOnTheTrip(city, maxDistance,city != participant.getLocation())) {
             maxDistance = maxDistance - city.getKmsToNextCity();
             city = city.next();
         }
@@ -75,9 +73,58 @@ public class TripMap {
 
     }
 
-    public boolean IsItLastChargerOnTheTrip(City city)
-    {
-        return !city.hasCharger();
+    public boolean IsItLastChargerOnTheTrip(City city, double maxDistance , boolean firstTimeOnTheCity ) {
+
+
+        boolean cityHasCharger = city.hasCharger();
+        boolean oneOfNextCitiesHaveCharger = city.hasAnyNextCityCharger();
+        boolean canGoToDestinationWithoutCharge = city.calculateKmsToNextCities() <= maxDistance;
+        boolean canGoToNextCity = maxDistance > city.getKmsToNextCity() ;
+
+        //maxDistance > city.getKmsToNextCity() &&
+
+                if(cityHasCharger && firstTimeOnTheCity)
+                {
+                    return false;
+                }
+
+                if(!canGoToDestinationWithoutCharge)
+                {
+                    if(cityHasCharger && oneOfNextCitiesHaveCharger && canGoToNextCity)
+                    {
+                        return true;
+                    }
+                }
+
+
+                if(!canGoToDestinationWithoutCharge)
+                {
+                    if(cityHasCharger) return false;
+                }
+
+
+
+                if(!canGoToDestinationWithoutCharge)
+                {
+                    if(!cityHasCharger && canGoToNextCity)
+                        return true;
+                }
+
+                if(!canGoToDestinationWithoutCharge)
+                {
+                    if(cityHasCharger && !oneOfNextCitiesHaveCharger)
+                    {
+                        return false;
+                    }
+                }
+
+        if(!canGoToDestinationWithoutCharge)
+        {
+                return false;
+        }
+
+                return true;
+       // return cityHasCharger && !oneOfNextCitiesHaveCharger && !canGoToDestinationWithoutCharge;
     }
 
 

@@ -86,4 +86,17 @@ public class City {
     public boolean hasCharger() {
         return chargerPower > 0;
     }
+
+    public boolean hasAnyNextCityCharger() {
+        City city = this.nextCity;
+        while (city.nextCity != NO_CITY) {
+            if (city.hasCharger()) {
+                return true;
+            }
+
+            city = city.nextCity;
+        }
+        return false;
+
+    }
 }
