@@ -34,7 +34,7 @@ public class Participant {
 
     public void go() {
         City city = location;
-        while (city.hasNext() && doIHaveToGoTo(city)) {
+        while (city.hasNext() && shouldIHaveToGoTo(city)) {
             updateCurrentChargeWithLowSpeed(city.getKmsToNextCity());
             city = city.next();
             location = city;
@@ -53,7 +53,7 @@ public class Participant {
 
     public void sprint() {
         City city = location;
-        while (city.hasNext() && doIHaveToGoTo(city)) {
+        while (city.hasNext() && shouldIHaveToGoTo(city)) {
             updateCurrentChargeWithHighSpeed(city.getKmsToNextCity());
             city = city.next();
             location = city;
@@ -69,7 +69,7 @@ public class Participant {
         return currentChargeInKw * highSpeedPerformance;
     }
 
-    private boolean doIHaveToGoTo(City city) {
+    private boolean shouldIHaveToGoTo(City city) {
         if (city.hasCharger()) {
             return canGoUpTo(city.calculateKmsToNextCities()) ? true
                     : isFullyCharged();
