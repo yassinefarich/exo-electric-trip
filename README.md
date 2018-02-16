@@ -1,3 +1,5 @@
+Personal solution for the exercise https://bitbucket.org/gjambet/exo-electric-trip
+
 # if you are taking the exam
 
 1 - Please Fork the repo, work on your own fork.

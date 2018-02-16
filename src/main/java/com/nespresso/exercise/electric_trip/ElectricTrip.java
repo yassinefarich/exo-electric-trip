@@ -1,27 +1,18 @@
 package com.nespresso.exercise.electric_trip;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ElectricTrip {
 
+    private List<Participant> participants;
 
-    List<Participant> participants;
-
-    private TripMap tripMap;// TODO : Dont call this class Map !!!!
-    private String destination;
-
-
-    public static void main(String[] args) {
-        ElectricTrip trip = new ElectricTrip("PARIS-200-BOURGES");
-    }
+    private TripPlan tripPlan;
 
     public ElectricTrip(String tripMapInfo) {
-        tripMap = new TripMap(tripMapInfo);
+        tripPlan = TripPlan.newFromPlan(tripMapInfo);
         participants = new ArrayList<>();
-        tripMap.printMap();
+        tripPlan.printPlan();
     }
 
     public int startTripIn(String start, int batterySize, int lowSpeedPerformance, int highSpeedPerformance) {
@@ -30,7 +21,7 @@ public class ElectricTrip {
                 .batterySize(batterySize)
                 .highSpeedPerformance(highSpeedPerformance)
                 .lowSpeedPerformance(lowSpeedPerformance)
-                .location(tripMap.findCity(start))
+                .location(tripPlan.findCity(start))
                 .build()
         );
         return participants.size() - 1;
@@ -38,12 +29,12 @@ public class ElectricTrip {
 
     public void go(int participantId) {
         Participant participant = participants.get(participantId);
-        tripMap.goUtMost(participant);
+        participant.go();
     }
 
     public void sprint(int participantId) {
         Participant participant = participants.get(participantId);
-        tripMap.sprintUtMost(participant);
+        participant.sprint();
     }
 
     public void charge(int participantId, int hoursOfCharge) {

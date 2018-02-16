@@ -1,21 +1,14 @@
 package com.nespresso.exercise.electric_trip;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class Participant {
 
 
-    @Setter
     @Getter
     private City location;
-
-    @Setter
-    @Getter
     private double currentChargeInKw;
-
     private int batterySize;
-
     private int lowSpeedPerformance;
     private int highSpeedPerformance;
 
@@ -36,15 +29,6 @@ public class Participant {
         return new ParticipantBuilder();
     }
 
-
-    public double calculateMaxDistWithLowSpeed() {
-        return currentChargeInKw * lowSpeedPerformance;
-    }
-
-    public double calculateMaxDistWithHighSpeed() {
-        return currentChargeInKw * highSpeedPerformance;
-    }
-
     public void charge(int hoursOfCharge) {
         int chargeData = hoursOfCharge * location.getChargerPower();
         this.currentChargeInKw = currentChargeInKw + chargeData > batterySize ? batterySize
@@ -55,30 +39,58 @@ public class Participant {
         return Math.round((this.currentChargeInKw / this.batterySize) * 100);
     }
 
-    public boolean isFullyCharged() {
-        return currentChargeInKw == batterySize;
+    public void go() {
+        City city = location;
+        while (city.hasNext() && doIHaveToGoTo(city)) {
+            updateCurrentChargeWithLowSpeed(city.getKmsToNextCity());
+            city = city.next();
+            location = city;
+        }
     }
 
-    public void go(int kmsToNextCity) {
+    //TODO : Find a good name for those functions plllzzz
+    private void updateCurrentChargeWithLowSpeed(int kmsToNextCity) {
         double maxDistance = calculateMaxDistWithLowSpeed() - kmsToNextCity;
-        setCurrentChargeInKw(maxDistance / lowSpeedPerformance);
+        currentChargeInKw = maxDistance / lowSpeedPerformance;
     }
 
-    public void sprint(int kmsToNextCity) {
+
+    private double calculateMaxDistWithLowSpeed() {
+        return currentChargeInKw * lowSpeedPerformance;
+    }
+
+    public void sprint() {
+        City city = location;
+        while (city.hasNext() && doIHaveToGoTo(city)) {
+            updateCurrentChargeWithHighSpeed(city.getKmsToNextCity());
+            city = city.next();
+            location = city;
+        }
+    }
+
+    private void updateCurrentChargeWithHighSpeed(int kmsToNextCity) {
         double maxDistance = calculateMaxDistWithHighSpeed() - kmsToNextCity;
-        setCurrentChargeInKw(maxDistance / highSpeedPerformance);
+        currentChargeInKw = maxDistance / highSpeedPerformance;
     }
 
-    public boolean canGoUpTo(int kmsToNextCity) {
-        return calculateMaxDistWithLowSpeed() > kmsToNextCity;
+    private double calculateMaxDistWithHighSpeed() {
+        return currentChargeInKw * highSpeedPerformance;
     }
 
-    public boolean doIHaveToGoTo(City city) {
+    private boolean doIHaveToGoTo(City city) {
         if (city.hasCharger()) {
             return canGoUpTo(city.calculateKmsToNextCities()) ? true
                     : isFullyCharged();
         }
         return canGoUpTo(city.getKmsToNextCity());
+    }
+
+    private boolean isFullyCharged() {
+        return currentChargeInKw == batterySize;
+    }
+
+    private boolean canGoUpTo(int kmsToNextCity) {
+        return calculateMaxDistWithLowSpeed() > kmsToNextCity;
     }
 
     public static class ParticipantBuilder {

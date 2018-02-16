@@ -1,10 +1,10 @@
 package com.nespresso.exercise.electric_trip;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode
 public class City {
-
-    public static City NO_CITY = null;
 
     @Getter
     private String name;
@@ -22,7 +22,7 @@ public class City {
         City city = this;
         int kmsAccumulator = 0;
 
-        while (city.nextCity != NO_CITY) {
+        while (city.hasNext()) {
             kmsAccumulator += city.kmsToNextCity;
             city = city.nextCity;
         }
@@ -30,19 +30,13 @@ public class City {
         return kmsAccumulator;
     }
 
+    public boolean hasNext() {
+        return null != nextCity;
+    }
+
 
     public City() {
     }
-
-    public City(String cityName, City next) {
-        this.name = cityName;
-        this.nextCity = next;
-    }
-
-    public City(String cityName) {
-        this(cityName, City.NO_CITY);
-    }
-
 
     public City withName(String data) {
         this.name = data;
@@ -55,7 +49,7 @@ public class City {
     }
 
     public City withPreviousCity(City previousCity) {
-        if (NO_CITY != previousCity) {
+        if (null != previousCity) {
             previousCity.nextCity = this;
         }
         return this;
@@ -87,16 +81,5 @@ public class City {
         return chargerPower > 0;
     }
 
-    public boolean hasAnyNextCityCharger() {
-        City city = this.nextCity;
-        while (city.nextCity != NO_CITY) {
-            if (city.hasCharger()) {
-                return true;
-            }
 
-            city = city.nextCity;
-        }
-        return false;
-
-    }
 }

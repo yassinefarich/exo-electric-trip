@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TripMap {
+public class TripPlan {
 
     List<City> cities = new ArrayList<>();
 
-    public TripMap(String tripMap) {
+    public static TripPlan newFromPlan(String plan) {
+        return new TripPlan(plan);
+    }
+
+    private TripPlan(String tripMap) {
+        parsePlan(tripMap);
+    }
+
+    private void parsePlan(String tripMap) {
         String[] mapData = tripMap.split("-");
 
-        City city = City.NO_CITY;
-        City previousCity = City.NO_CITY;
-
+        City city, previousCity = null;
         for (String data : mapData) {
 
             if (isCity(data)) {
@@ -49,36 +55,12 @@ public class TripMap {
     }
 
 
-    public void printMap() {
+    public void printPlan() {
         cities.stream().forEach(System.out::println);
     }
 
 
-    public void goUtMost(Participant participant) {
-
-        City city = participant.getLocation();
-
-        while (city.next() != City.NO_CITY && participant.doIHaveToGoTo(city)) {
-            participant.go(city.getKmsToNextCity());
-            city = city.next();
-            participant.setLocation(city);
-        }
-    }
-
-
-    public void sprintUtMost(Participant participant) {
-
-        City city = participant.getLocation();
-
-        while (city.next() != City.NO_CITY && participant.doIHaveToGoTo(city)) {
-            participant.sprint(city.getKmsToNextCity());
-            city = city.next();
-            participant.setLocation(city);
-        }
-    }
-
     public City findCity(String city) {
-
         return cities.stream()
                 .filter(c -> c.isNamed(city))
                 .collect(Collectors.toList()).get(0);
