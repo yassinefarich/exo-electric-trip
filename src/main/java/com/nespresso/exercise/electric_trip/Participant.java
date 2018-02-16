@@ -1,12 +1,14 @@
 package com.nespresso.exercise.electric_trip;
 
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 public class Participant {
-
 
     @Getter
     private City location;
+
     private double currentChargeInKw;
     private int batterySize;
     private int lowSpeedPerformance;
@@ -18,15 +20,6 @@ public class Participant {
         this.batterySize = batterySize;
         this.lowSpeedPerformance = lowSpeedPerformance;
         this.highSpeedPerformance = highSpeedPerformance;
-    }
-
-    Participant(City location, int batterySize, int lowSpeedPerformance, int highSpeedPerformance) {
-        this(location, batterySize, batterySize, lowSpeedPerformance, highSpeedPerformance);
-
-    }
-
-    public static ParticipantBuilder builder() {
-        return new ParticipantBuilder();
     }
 
     public void charge(int hoursOfCharge) {
@@ -48,12 +41,11 @@ public class Participant {
         }
     }
 
-    //TODO : Find a good name for those functions plllzzz
+    //TODO : Find a good name for those functions
     private void updateCurrentChargeWithLowSpeed(int kmsToNextCity) {
         double maxDistance = calculateMaxDistWithLowSpeed() - kmsToNextCity;
         currentChargeInKw = maxDistance / lowSpeedPerformance;
     }
-
 
     private double calculateMaxDistWithLowSpeed() {
         return currentChargeInKw * lowSpeedPerformance;
@@ -91,49 +83,5 @@ public class Participant {
 
     private boolean canGoUpTo(int kmsToNextCity) {
         return calculateMaxDistWithLowSpeed() > kmsToNextCity;
-    }
-
-    public static class ParticipantBuilder {
-        private City location;
-        private double currentChargeInKw;
-        private int batterySize;
-        private int lowSpeedPerformance;
-        private int highSpeedPerformance;
-
-        ParticipantBuilder() {
-        }
-
-        public ParticipantBuilder location(City location) {
-            this.location = location;
-            return this;
-        }
-
-        public ParticipantBuilder currentChargeInKw(double currentChargeInKw) {
-            this.currentChargeInKw = currentChargeInKw;
-            return this;
-        }
-
-        public ParticipantBuilder batterySize(int batterySize) {
-            this.batterySize = batterySize;
-            return this;
-        }
-
-        public ParticipantBuilder lowSpeedPerformance(int lowSpeedPerformance) {
-            this.lowSpeedPerformance = lowSpeedPerformance;
-            return this;
-        }
-
-        public ParticipantBuilder highSpeedPerformance(int highSpeedPerformance) {
-            this.highSpeedPerformance = highSpeedPerformance;
-            return this;
-        }
-
-        public Participant build() {
-            return new Participant(location, batterySize, lowSpeedPerformance, highSpeedPerformance);
-        }
-
-        public String toString() {
-            return "Participant.ParticipantBuilder(location=" + this.location + ", currentChargeInKw=" + this.currentChargeInKw + ", batterySize=" + this.batterySize + ", lowSpeedPerformance=" + this.lowSpeedPerformance + ", highSpeedPerformance=" + this.highSpeedPerformance + ")";
-        }
     }
 }

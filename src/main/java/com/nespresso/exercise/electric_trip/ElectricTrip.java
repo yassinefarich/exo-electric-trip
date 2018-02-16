@@ -19,6 +19,7 @@ public class ElectricTrip {
 
         participants.add(Participant.builder()
                 .batterySize(batterySize)
+                .currentChargeInKw(batterySize)
                 .highSpeedPerformance(highSpeedPerformance)
                 .lowSpeedPerformance(lowSpeedPerformance)
                 .location(tripPlan.findCity(start))
