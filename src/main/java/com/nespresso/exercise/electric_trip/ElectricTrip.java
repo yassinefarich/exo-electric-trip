@@ -12,7 +12,6 @@ public class ElectricTrip {
     public ElectricTrip(String tripMapInfo) {
         tripPlan = TripPlan.newFromPlan(tripMapInfo);
         participants = new ArrayList<>();
-        tripPlan.printPlan();
     }
 
     public int startTripIn(String start, int batterySize, int lowSpeedPerformance, int highSpeedPerformance) {
