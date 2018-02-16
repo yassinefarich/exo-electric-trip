@@ -2,7 +2,6 @@ package com.nespresso.exercise.electric_trip;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TripMap {
@@ -56,96 +55,26 @@ public class TripMap {
 
 
     public void goUtMost(Participant participant) {
-        // TODO : Warning a Getter
-        City startingCity = participant.getLocation();
-        double maxDistance = participant.calculateMaxDistWithLowSpeed();
 
-        City city = startingCity;
-        while (city.next() != City.NO_CITY && IsItLastChargerOnTheTrip(city, maxDistance,city != participant.getLocation())) {
-            maxDistance = maxDistance - city.getKmsToNextCity();
+        City city = participant.getLocation();
+
+        while (city.next() != City.NO_CITY && participant.doIHaveToGoTo(city)) {
+            participant.go(city.getKmsToNextCity());
             city = city.next();
+            participant.setLocation(city);
         }
-
-        participant.setCurrentChargeInKw(maxDistance / participant.getLowSpeedPerformance());
-        participant.setLocation(city);
-
-        //participant.setCurrentCharge(Math.round(maxDistance / participant.calculateMaxDistWithLowSpeed() * 100));
-
-    }
-
-    public boolean IsItLastChargerOnTheTrip(City city, double maxDistance , boolean firstTimeOnTheCity ) {
-
-
-        boolean cityHasCharger = city.hasCharger();
-        boolean oneOfNextCitiesHaveCharger = city.hasAnyNextCityCharger();
-        boolean canGoToDestinationWithoutCharge = city.calculateKmsToNextCities() <= maxDistance;
-        boolean canGoToNextCity = maxDistance > city.getKmsToNextCity() ;
-
-        //maxDistance > city.getKmsToNextCity() &&
-
-                if(cityHasCharger && firstTimeOnTheCity)
-                {
-                    return false;
-                }
-
-                if(!canGoToDestinationWithoutCharge)
-                {
-                    if(cityHasCharger && oneOfNextCitiesHaveCharger && canGoToNextCity)
-                    {
-                        return true;
-                    }
-                }
-
-
-                if(!canGoToDestinationWithoutCharge)
-                {
-                    if(cityHasCharger) return false;
-                }
-
-
-
-                if(!canGoToDestinationWithoutCharge)
-                {
-                    if(!cityHasCharger && canGoToNextCity)
-                        return true;
-                }
-
-                if(!canGoToDestinationWithoutCharge)
-                {
-                    if(cityHasCharger && !oneOfNextCitiesHaveCharger)
-                    {
-                        return false;
-                    }
-                }
-
-        if(!canGoToDestinationWithoutCharge)
-        {
-                return false;
-        }
-
-                return true;
-       // return cityHasCharger && !oneOfNextCitiesHaveCharger && !canGoToDestinationWithoutCharge;
     }
 
 
     public void sprintUtMost(Participant participant) {
-        // TODO : Warning a Getter
-        City startingCity = participant.getLocation();
-        // There is an error here !!!
-        double maxDistance = participant.calculateMaxDistWithHighSpeed();
 
-        City city = startingCity;
-        int kmsToDestination = city.calculateKmsToNextCities();
+        City city = participant.getLocation();
 
-        while (city.next() != City.NO_CITY && maxDistance > city.getKmsToNextCity()) {
-            maxDistance = maxDistance - city.getKmsToNextCity();
+        while (city.next() != City.NO_CITY && participant.doIHaveToGoTo(city)) {
+            participant.sprint(city.getKmsToNextCity());
             city = city.next();
+            participant.setLocation(city);
         }
-
-
-        participant.setCurrentChargeInKw(maxDistance / participant.getHighSpeedPerformance());
-        participant.setLocation(city);
-
     }
 
     public City findCity(String city) {
@@ -153,25 +82,6 @@ public class TripMap {
         return cities.stream()
                 .filter(c -> c.isNamed(city))
                 .collect(Collectors.toList()).get(0);
-    }
-
-    public void charge(Participant participant, int hoursOfCharge) {
-
-        // participant
-
-    }
-
-    public void parseMap(String map) {
-
-
-    }
-
-    public void putCity(String city) {
-
-    }
-
-    public void putKm(int km) {
-
     }
 
 

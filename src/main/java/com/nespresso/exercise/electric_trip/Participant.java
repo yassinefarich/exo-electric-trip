@@ -16,10 +16,7 @@ public class Participant {
 
     private int batterySize;
 
-    @Getter
     private int lowSpeedPerformance;
-
-    @Getter
     private int highSpeedPerformance;
 
     Participant(City location, double currentChargeInKw, int batterySize, int lowSpeedPerformance, int highSpeedPerformance) {
@@ -58,6 +55,31 @@ public class Participant {
         return Math.round((this.currentChargeInKw / this.batterySize) * 100);
     }
 
+    public boolean isFullyCharged() {
+        return currentChargeInKw == batterySize;
+    }
+
+    public void go(int kmsToNextCity) {
+        double maxDistance = calculateMaxDistWithLowSpeed() - kmsToNextCity;
+        setCurrentChargeInKw(maxDistance / lowSpeedPerformance);
+    }
+
+    public void sprint(int kmsToNextCity) {
+        double maxDistance = calculateMaxDistWithHighSpeed() - kmsToNextCity;
+        setCurrentChargeInKw(maxDistance / highSpeedPerformance);
+    }
+
+    public boolean canGoUpTo(int kmsToNextCity) {
+        return calculateMaxDistWithLowSpeed() > kmsToNextCity;
+    }
+
+    public boolean doIHaveToGoTo(City city) {
+        if (city.hasCharger()) {
+            return canGoUpTo(city.calculateKmsToNextCities()) ? true
+                    : isFullyCharged();
+        }
+        return canGoUpTo(city.getKmsToNextCity());
+    }
 
     public static class ParticipantBuilder {
         private City location;
